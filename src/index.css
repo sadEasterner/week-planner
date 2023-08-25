@@ -12,6 +12,27 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+  --C1: #282B2F;
+  --C1-lower: #282B2F15;
+  --C2: #F3F3F3;
+  --C2-lower: #f3f3f398;
+  --C2-alternative: #f3f3f391;
+  --C3: #b98ee0;
+  --C3-lower: #b98ee030;
+  --C3--alternative: #e34f94;
+  --C3--alternative-lower: #e34f9440;
+  --C4: #229DE9;
+  --C4--alternative: #33a4e6;
+  --C4--alternative-lower: #65c8c920;
+  --C4-lower: #229DE915;
+  --danger: #db4242;
+  --danger-lower: #db424215;
+  --danger-alternative: #ff0000;
+  --success: #1D9337;
+  --success-alternative: #1d933768;
+  --success-lower: #1D933715;
+  --alert: #e1c110;
+  --alert-lower: #e1c11015;
 }
 
 a {
@@ -30,12 +51,10 @@ body {
   min-width: 320px;
   min-height: 100vh;
 }
-
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
-
 button {
   border-radius: 8px;
   border: 1px solid transparent;
