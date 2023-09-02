@@ -7,10 +7,15 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import Overlay from 'react-bootstrap/Overlay';
 import Popover from 'react-bootstrap/Popover';
-import { toPersianNumber,  } from '../helper/functions';
+import { convertDaytoString, generateTimeString, randomColor, toPersianNumber,  } from '../helper/functions';
 
 const WeekTable = () => {
     //state
+    const [lang, setLang] = useState("en");
+    const [totalH, setTotalH] = useState(24);
+    const [startH, setStartH] = useState(0);
+
+    useEffect(() => {}, []);
     type item ={
         day: number
         startTime: string;
@@ -53,9 +58,18 @@ const WeekTable = () => {
     ];
     const getItemInPlan = (id : string) => {
         return plan.find(i => i.id === id)
-    }
+    };
+    const getItemPlanLable = (id : string | undefined,lang: string | undefined ) => {
+        let planItem = plan.find(i => i.id === id);
+        return planItem?.label;
+    };
+    const getItemInPlanTime = (id : string | undefined, lang: string | undefined) => {
+        let planItem = plan.find(i => i.id === id);
+        if(lang=== 'Pr') return {startTime: toPersianNumber(generateTimeString(planItem?.startTime)) , endtime: toPersianNumber(generateTimeString(planItem?.endTime))};
+        else return {startTime: generateTimeString(planItem?.startTime) , endtime: generateTimeString(planItem?.endTime)};
+    };
     //event handler 
-    const renderPresentationPerTime = (dayId: number ) => {
+    const renderPresentationPerTime = (dayId: number, amount: number ) => {
 
         if (plan) {
             // index --> 0: start pos / 1: width / 2: ppresentation
@@ -75,18 +89,17 @@ const WeekTable = () => {
                     EH = endT[0] + endT[1];
                     EM = endT[2] + endT[3];
     
-                    let SHConvert = parseInt(SH) - 6;
+                    let SHConvert = parseInt(SH) - startH;
                     let SMConvert = parseFloat(SM) / 60;
-                    let EHConvert = parseInt(EH) - 6;
+                    let EHConvert = parseInt(EH) - startH;
                     let EMConvert = parseFloat(EM) / 60;
     
-                    let startPos = ((SHConvert + SMConvert) * 100) / 17;
-                    let endPos = ((EHConvert + EMConvert) * 100) / 17;
+                    let startPos = ((SHConvert + SMConvert) * 100) / amount;
+                    let endPos = ((EHConvert + EMConvert) * 100) / amount;
                     let W = endPos - startPos;
                     let pId = item.id;
                     positions.push([startPos, W, pId]);
                 }
-                
             }
             return (positions.map(pos =>
                 <Fragment>
@@ -98,16 +111,18 @@ const WeekTable = () => {
                     overlay={
                         <Tooltip id="custom-tooltip">
                             {
-                                <Fragment>
-                                    <span dir="ltr">{pos[2]}</span><span> تا </span><span dir="ltr">{pos[2]}</span>
-                                    <br/>
-                                    <span>{pos[2]}</span>
-                                </Fragment>
+                                lang === "Pr" && (<Fragment><span dir="ltr">{getItemInPlanTime(pos[2].toString(), lang).endtime}</span><span> تا </span><span dir="ltr">{getItemInPlanTime(pos[2].toString(), lang).startTime}</span></Fragment>)
                             }
+                            {
+                                lang !== "Pr" && (<Fragment><span dir="ltr">{getItemInPlanTime(pos[2].toString(), lang).startTime}</span><span> till </span><span dir="ltr">{getItemInPlanTime(pos[2].toString(), lang).endtime}</span></Fragment>)
+                            }
+                                    
+                                    <br/>
+                                    <span>{getItemPlanLable(pos[2].toString(), lang)}</span>
                         </Tooltip>
                     }>
-                        <div key={dayId + 'A'} className="timeZonRow-child" style={{ position: "absolute", right: `${pos[0]}%`, width: `${pos[1]}%` }}>
-                            {getItemInPlan(pos[2].toString())?.label}
+                        <div key={dayId + 'A'} className="timeZonRow-child" style={{ position: "absolute", right: `${pos[0]}%`, width: `${pos[1]}%`,backgroundColor: `${randomColor()}` }}>
+                            {getItemPlanLable(pos[2].toString(), lang)}
                         </div>
                     </OverlayTrigger>
                     
@@ -119,12 +134,15 @@ const WeekTable = () => {
         let hour = Array(amount).fill('0');
         return hour.map((h, index) => <div key={index + 'H'} className="hour-column-child" style={{ width: `${100 / amount}%` }}></div>)
     };
-    const renderHourTitle = () => {
+    const renderHourTitle = (amount: number) => {
         let hoursTitle = [];
-        for (let i = 1; i <= 17; i++) {
-            hoursTitle.push(i + 6);
+        for (let i = 1; i <= amount; i++) {
+            if(i + startH > 24) {
+                hoursTitle.push(i-24 + startH - 1 );  
+            }
+            else hoursTitle.push(i + startH - 1 );
         }
-        return hoursTitle.map((title, index) => <div key={index + 'H'} className="hour-column-child text-center" style={{ width: `${100 / 17}%` }} dir="ltr">{title} : 00</div>)
+        return hoursTitle.map((title, index) => <div key={index + 'H'} className="hour-column-child text-center" style={{ width: `${100 / amount}%` }} dir="ltr">{lang === "Pr" ? toPersianNumber(title + ':00') :  title + ':00'} </div>)
     }
     const renderDetailModal = () => {
     
@@ -138,22 +156,22 @@ const WeekTable = () => {
                         <div className="day p-3 text-center" >#
                         </div>
                         {
-                            days.map(day => <div key={day.id + 'HT'} className="day text-center">{day.title}</div>)
+                            days.map(day => <div key={day.id + 'HT'} className="day text-center">{convertDaytoString(day.id, lang)}</div>)
                         }
                     </div>
                     <div className="d-flex hour-column">
                         {
-                            renderHouersForWeek(17)
+                            renderHouersForWeek(totalH)
                         }
                     </div>
                     <div className="d-flex flex-column timeZone ">
                         <div className="timeZonRow d-flex justify-content-center pt-3" style={{ position: "relative" }}>
                         {
-                                renderHourTitle()
+                                renderHourTitle(totalH)
                         }
                         </div>
                         {
-                            days.map(day => <div key={day.id + 'AB'} className=" timeZonRow " style={{ position: "relative" }}>{renderPresentationPerTime(day.id)}</div>)
+                            days.map(day => <div key={day.id + 'AB'} className=" timeZonRow " style={{ position: "relative" }}>{renderPresentationPerTime(day.id, totalH)}</div>)
                         }
                     </div>
                 </div>
