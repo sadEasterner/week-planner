@@ -1,9 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
+import planSlice from "./plans-slice";
 
 
 const store = configureStore({
     reducer: {
-
+        plan: planSlice.reducer,
     }
 });
 

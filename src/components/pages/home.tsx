@@ -9,12 +9,14 @@ import Overlay from 'react-bootstrap/Overlay';
 import Popover from 'react-bootstrap/Popover';
 import { toPersianNumber, generateTimeString } from '../helper/functions';
 import WeekTable from '../table';
+import ItemGenerator from '../UI/itemGenerator';
 
 const Home = () => {
 
     return (
         <Fragment>
-            <WeekTable />
+            {/* <WeekTable /> */}
+            <ItemGenerator />
         </Fragment>
     );
 };

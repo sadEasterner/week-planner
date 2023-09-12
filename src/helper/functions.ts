@@ -54,7 +54,7 @@ export const convertDaytoString = (dayId: number, to: string ) => {
                 return"جمعه";
         }
     }
-    if (to === "en"){
+    if (to === "En"){
         switch(dayId){
             case 0: 
                 return "Saturday ";

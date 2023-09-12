@@ -1,7 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from './index';
-
-// Define a type for the slice state
+interface ShowSettings {
+    lang: string,
+    color: string | undefined,
+    totalHours: number,
+    startHours: number,
+}
+interface day {
+    id: number,
+}
 interface item {
     day: number
     startTime: string;
@@ -9,12 +16,13 @@ interface item {
     label: string;
     id: string;
 }
-interface CounterState {
-    plan: item[]
+interface PlanState {
+    plan: item[],
+    days: day[],
+    ShowSettings: ShowSettings
 }
 
-// Define the initial state using that type
-const initialState: CounterState = {
+const initialState: PlanState = {
     plan : [
         {
             day: 0,
@@ -37,21 +45,49 @@ const initialState: CounterState = {
             label: 'English',
             id:'#1113'
         }
-    ]
+    ],
+    days: [
+        {id:0},
+        {id:1},
+        {id:2},
+        {id:3},
+        {id:4},
+        {id:5},
+        {id:6},
+    ],
+    ShowSettings: {
+        lang: "en",
+        color:  "",
+        totalHours: 24,
+        startHours: 0,
+    }
 }
 
-export const counterSlice = createSlice({
+export const planSlice = createSlice({
   name: 'counter',
-  // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
-
+    addItem(state, action){
+        state.plan.push(action.payload);
+    },
+    removeItem(state, action){
+        let id: string = action.payload.id;
+        for( let item of state.plan){
+            let i: number = 0;
+            if (item.id === id) state.plan.splice(i, 1);
+            i++;
+        }
+    },
+    editItem(state, action){
+        let id: string = action.payload.id;
+        let newItem: any,{} = action.payload.newItem;
+        state.plan.filter(item => item.id !== id ).push(newItem)
+    },
   }
 })
 
-export const { } = counterSlice.actions
+export const {editItem, removeItem, addItem} = planSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type
-export const selectCount = (state: RootState) => state.counter.value
 
-export default counterSlice;
+export default planSlice;
