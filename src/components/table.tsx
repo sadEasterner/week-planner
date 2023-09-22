@@ -8,20 +8,21 @@ import Tooltip from 'react-bootstrap/Tooltip';
 import Overlay from 'react-bootstrap/Overlay';
 import Popover from 'react-bootstrap/Popover';
 import { useSelector, useDispatch } from 'react-redux';
-import { convertDaytoString, generateTimeString, randomColor, toPersianNumber,  } from '../helper/functions';
+import { convertDaytoString, generateTimeString, randomColor, toPersianNumber,  } from '../Helper/functions';
 import type { RootState } from '../Store/index'
 import { language } from '../Enums/languages';
+import { removeItem } from '../Store/plans-slice';
 
 const WeekTable = () => {
     
     
     //state
     const {plan, days, ShowSettings} = useSelector((state: RootState) => state.plan);
+
     const [lang, setLang] = useState("Pr");
-    const [totalH, setTotalH] = useState(24);
-    const [startH, setStartH] = useState(0);
     // hooks 
     const dispatch = useDispatch();
+
     useEffect(() => {}, []);
 
     const getItemInPlan = (id : string) => {
@@ -31,14 +32,22 @@ const WeekTable = () => {
         let planItem = plan.find(i => i.id === id);
         return planItem?.label;
     };
+    const getItemPlanColor = (id : string | undefined,) => {
+        let planItem = plan.find(i => i.id === id);
+        return planItem?.color;
+    };
     const getItemInPlanTime = (id : string | undefined, lang: string | undefined) => {
         let planItem = plan.find(i => i.id === id);
         if(language.Persian === lang) return {startTime: toPersianNumber(generateTimeString(planItem?.startTime)) , endtime: toPersianNumber(generateTimeString(planItem?.endTime))};
         else return {startTime: generateTimeString(planItem?.startTime) , endtime: generateTimeString(planItem?.endTime)};
     };
     //event handler 
+    const deleteItem = (event: any) => {
+        event.preventDefault()
+        let id = event.target.getAttribute("data-item");
+        dispatch(removeItem(id));
+    };
     const renderPresentationPerTime = (dayId: number, amount: number ) => {
-
         if (plan) {
             // index --> 0: start pos / 1: width / 2: ppresentation
             type positions = [number, number ,string | undefined]
@@ -72,6 +81,7 @@ const WeekTable = () => {
             return (positions.map(pos =>
                 <Fragment>
                 <OverlayTrigger
+                    
                     key={dayId + "GF"}
                     placement="top"
                     delay={{ show: 250, hide: 400 }}
@@ -89,7 +99,7 @@ const WeekTable = () => {
                                     <span>{getItemPlanLable(pos[2].toString(), lang)}</span>
                         </Tooltip>
                     }>
-                        <div key={dayId + 'A'} className="timeZonRow-child" style={{ position: "absolute", right: `${pos[0]}%`, width: `${pos[1]}%`,backgroundColor: `${randomColor()}` }}>
+                        <div key={dayId + 'A'} data-item={pos[2].toString()} className="timeZonRow-child" style={{ position: "absolute", right: `${pos[0]}%`, width: `${pos[1]}%`,backgroundColor: `${getItemPlanColor(pos[2].toString())}50`}} onContextMenu={deleteItem}>
                             {getItemPlanLable(pos[2].toString(), lang)}
                         </div>
                     </OverlayTrigger>
@@ -112,9 +122,6 @@ const WeekTable = () => {
         }
         return hoursTitle.map((title, index) => <div key={index + 'H'} className="hour-column-child text-center" style={{ width: `${100 / amount}%` }} dir="ltr">{lang === "Pr" ? toPersianNumber(title + ':00') :  title + ':00'} </div>)
     }
-    const renderDetailModal = () => {
-    
-    };
     return (
         <Fragment>
             <div className='modal-weeklyView w-100'>
@@ -124,7 +131,7 @@ const WeekTable = () => {
                         <div className="day p-3 text-center" >#
                         </div>
                         {
-                            days.map(day => <div key={day.id + 'HT'} className="day text-center">{convertDaytoString(day.id, lang)}</div>)
+                            days.map(day => <div key={day + 'HT'} className="day text-center">{convertDaytoString(day, lang)}</div>)
                         }
                     </div>
                     <div className="d-flex hour-column">
@@ -139,7 +146,7 @@ const WeekTable = () => {
                         }
                         </div>
                         {
-                            days.map(day => <div key={day.id + 'AB'} className=" timeZonRow " style={{ position: "relative" }}>{renderPresentationPerTime(day.id, ShowSettings.totalHours)}</div>)
+                            days.map(day => <div key={day+ 'AB'} className=" timeZonRow " style={{ position: "relative" }}>{renderPresentationPerTime(day, ShowSettings.totalHours)}</div>)
                         }
                     </div>
                 </div>

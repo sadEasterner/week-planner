@@ -7,7 +7,7 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import Overlay from 'react-bootstrap/Overlay';
 import Popover from 'react-bootstrap/Popover';
-import { toPersianNumber, generateTimeString } from '../helper/functions';
+import { toPersianNumber, generateTimeString } from '../../Helper/functions';
 import WeekTable from '../table';
 import ItemGenerator from '../UI/itemGenerator';
 
@@ -15,7 +15,7 @@ const Home = () => {
 
     return (
         <Fragment>
-            {/* <WeekTable /> */}
+            <WeekTable />
             <ItemGenerator />
         </Fragment>
     );

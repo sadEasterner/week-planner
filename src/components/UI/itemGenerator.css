@@ -3,3 +3,22 @@
     padding: 1rem;
     border-radius: 4px;
 }
+#itemGeneator h3{
+    color: var(--C2);
+    margin: 0;
+}
+.add-icon svg{
+    color: var(--C3);
+    font-size: 30px;
+    cursor: pointer;
+}
+.add-icon svg:hover{
+    transform: scale(1.1);
+}
+.newItem{
+    height: auto;
+}
+.expand{
+    height: 300px;
+    transition: 0.25s;
+}

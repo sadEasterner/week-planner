@@ -17,8 +17,8 @@
   --C2: #F3F3F3;
   --C2-lower: #f3f3f398;
   --C2-alternative: #f3f3f391;
-  --C3: #b98ee0;
-  --C3-lower: #b98ee030;
+  --C3: #7a30be;
+  --C3-lower: #6f0bce30;
   --C3--alternative: #e34f94;
   --C3--alternative-lower: #e34f9440;
   --C4: #229DE9;
@@ -50,6 +50,7 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background-color:  #0f0f0f;
 }
 h1 {
   font-size: 3.2em;

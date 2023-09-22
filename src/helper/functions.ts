@@ -1,4 +1,4 @@
-
+// convert time string in data to standard time string 
 export const generateTimeString = (str: any) => {
     let charList = Array.from(str);
     charList.length === 4 ? charList.splice(2, 0, ':') : charList.splice(1, 0, ':');

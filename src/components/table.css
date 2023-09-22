@@ -75,6 +75,7 @@
     cursor: pointer;
     font-size: 12px;
     opacity: 0.7;
+    border-right: 1px solid var(--C3);
 }
 .hour-column{
     position: absolute;
